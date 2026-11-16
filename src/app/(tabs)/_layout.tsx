@@ -1,8 +1,41 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { getSession } from '../../lib/session';
 import { EDGE_COLORS } from '../../theme/colors';
 
+type SessionStatus = 'checking' | 'signedIn' | 'signedOut';
+
 export default function TabsLayout() {
+  const [status, setStatus] = useState<SessionStatus>('checking');
+
+  useEffect(() => {
+    let active = true;
+
+    getSession().then((session) => {
+      if (!active) return;
+      setStatus(session ? 'signedIn' : 'signedOut');
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (status === 'checking') {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={EDGE_COLORS.brandAccent} />
+      </View>
+    );
+  }
+
+  // Sem sessão salva, manda o usuário de volta para a tela de login.
+  if (status === 'signedOut') {
+    return <Redirect href="/login" />;
+  }
+
   return (
     <Tabs
       screenOptions={({ route }) => ({
@@ -47,3 +80,12 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: EDGE_COLORS.background,
+  },
+});

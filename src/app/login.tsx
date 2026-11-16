@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { AuthScreen } from '../components/AuthScreen';
 import { getSession, saveSession } from '../lib/session';
 
-export default function IndexScreen() {
+export default function LoginScreen() {
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [user, setUser] = useState<{ email: string } | null>(null);
 
@@ -28,9 +28,10 @@ export default function IndexScreen() {
   }, []);
 
   const handleLoginSuccess = async (nextUser: { email: string }) => {
-    setUser(nextUser);
+    // Salva antes para que a proteção das abas encontre a sessão ao verificar o armazenamento.
     await saveSession(nextUser);
-    router.replace('/(tabs)');
+    setUser(nextUser);
+    router.replace('/');
   };
 
   if (isCheckingSession) {
@@ -42,7 +43,7 @@ export default function IndexScreen() {
   }
 
   if (user) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/" />;
   }
 
   return <AuthScreen onLoginSuccess={handleLoginSuccess} />;
