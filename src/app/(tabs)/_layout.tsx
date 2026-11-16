@@ -33,7 +33,7 @@ export default function TabsLayout() {
 
   // Sem sessão salva, manda o usuário de volta para a tela de login.
   if (status === 'signedOut') {
-    return <Redirect href="/" />;
+    return <Redirect href="/login" />;
   }
 
   return (

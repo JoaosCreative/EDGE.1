@@ -21,7 +21,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await clearSession();
-    router.replace('/');
+    router.replace('/login');
   };
 
   return (
