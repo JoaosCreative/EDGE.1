@@ -28,8 +28,9 @@ export default function IndexScreen() {
   }, []);
 
   const handleLoginSuccess = async (nextUser: { email: string }) => {
-    setUser(nextUser);
+    // Salva antes para que a proteção das abas encontre a sessão ao verificar o armazenamento.
     await saveSession(nextUser);
+    setUser(nextUser);
     router.replace('/(tabs)');
   };
 
